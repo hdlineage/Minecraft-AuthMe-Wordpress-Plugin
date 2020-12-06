@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Minecraft Authme
+ * Plugin Name: Minecraft AuthMe
  * Plugin URI: http://henrychang.ca
  * Description: Wordpress plugin for Minecraft Authme Integration
  * Version: 1.0
