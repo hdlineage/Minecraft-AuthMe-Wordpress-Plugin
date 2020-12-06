@@ -1,13 +1,13 @@
 <?php
 
 function minecraft_authme_add_settings_page() {
-    add_options_page( 'Minecraft Authme Settings Page', 'Minecraft Authme', 'manage_options', 'minecraft-authme', 'minecraft_authme_render_settings_page' );
+    add_options_page( 'Minecraft AuthMe Settings Page', 'Minecraft AuthMe', 'manage_options', 'minecraft-authme', 'minecraft_authme_render_settings_page' );
 }
 add_action( 'admin_menu', 'minecraft_authme_add_settings_page' );
 
 function minecraft_authme_render_settings_page() {
     ?>
-    <h2>Minecraft Authme Settings</h2>
+    <h2>Minecraft AuthMe Settings</h2>
     <form action="options.php" method="post">
         <?php 
         settings_fields( 'minecraft_authme_options' );
@@ -58,7 +58,7 @@ function minecraft_authme_options_validate( $input ) {
 
 
 function minecraft_authme_section_text() {
-    echo '<p>Here you can set all the options for connecting to Authme database</p>';
+    echo '<p>Here you can set all the options for connecting to AuthMe database</p>';
 }
 
 function minecraft_authme_host() {

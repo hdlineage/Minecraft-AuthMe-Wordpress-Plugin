@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Minecraft AuthMe
  * Plugin URI: http://henrychang.ca
- * Description: Wordpress plugin for Minecraft Authme Integration
+ * Description: Wordpress plugin for Minecraft AuthMe Integration
  * Version: 1.0
  * Author: hdlineage
  * Author URI: http://henrychang.ca
