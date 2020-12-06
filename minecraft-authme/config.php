@@ -29,6 +29,8 @@ function minecraft_authme_register_settings() {
 	add_settings_field( 'minecraft_authme_invite', 'Invitation Code', 'minecraft_authme_invite', 'minecraft_authme_fields', 'db_settings' );    
 	add_settings_field( 'minecraft_authme_email_notification', 'Email Notification', 'minecraft_authme_email_notification', 'minecraft_authme_fields', 'db_settings' );
 	add_settings_field( 'minecraft_authme_captcha', 'Invisible ReCaptcha Integration', 'minecraft_authme_captcha', 'minecraft_authme_fields', 'db_settings' );
+	add_settings_field( 'minecraft_authme_welcome', 'Welcome Message', 'minecraft_authme_welcome', 'minecraft_authme_fields', 'db_settings' );
+	add_settings_field( 'minecraft_authme_form_title', 'Form Title', 'minecraft_authme_form_title', 'minecraft_authme_fields', 'db_settings' );
 	
 	$options = get_option( 'minecraft_authme_options' );
 	if(!array_key_exists ('host', $options))		
@@ -47,6 +49,10 @@ function minecraft_authme_register_settings() {
 		$options['email'] = '';
 	if(!array_key_exists ('captcha', $options))		
 		$options['captcha'] = 0;
+	if(!array_key_exists ('welcome', $options))		
+		$options['welcome'] = 'You must have a valid invite code to register.';
+	if(!array_key_exists ('form-title', $options))		
+		$options['form-title'] = 'New Account Registration Form';
 	
 	update_option('minecraft_authme_options', $options);
 }
@@ -76,7 +82,7 @@ function minecraft_authme_user() {
 function minecraft_authme_pass() {
     $options = get_option( 'minecraft_authme_options' );
 	$value = $options['pass'];	
-    echo "<input id='minecraft_authme_pass' name='minecraft_authme_options[pass]' type='text' value='$value' />";
+    echo "<input id='minecraft_authme_pass' name='minecraft_authme_options[pass]' type='password' value='$value' />";
 }
 
 function minecraft_authme_db() {
@@ -100,7 +106,7 @@ function minecraft_authme_invite() {
 function minecraft_authme_email_notification() {
     $options = get_option( 'minecraft_authme_options' );
 	$value = $options['email'];
-    echo "<input id='minecraft_authme_email_notification' name='minecraft_authme_options[email]' type='text' value='$value' />";
+    echo "<input id='minecraft_authme_email_notification' name='minecraft_authme_options[email]' type='email' value='$value' />";
 }
 
 function minecraft_authme_captcha() {
@@ -113,6 +119,18 @@ function minecraft_authme_captcha() {
 		$html = "You must first make sure the <a href='https://wordpress.org/plugins/invisible-recaptcha/'>Invisible ReCaptcha Plugin</a> is installed";
 	}	
 	echo $html;
+}
+
+function minecraft_authme_welcome() {
+    $options = get_option( 'minecraft_authme_options' );
+	$value = $options['welcome'];
+    echo "<input id='minecraft_authme_welcome' name='minecraft_authme_options[welcome]' size='50' type='text' value='$value' />";
+}
+
+function minecraft_authme_form_title() {
+    $options = get_option( 'minecraft_authme_options' );
+	$value = $options['form-title'];
+    echo "<input id='minecraft_authme_form_title' name='minecraft_authme_options[form-title]' size='50' type='text' value='$value' />";
 }
 
 

@@ -11,9 +11,28 @@ add_shortcode('minecraft_authme', 'minecraft_authme_main');
 require_once('AuthMeController.php');
 require_once('Sha256.php');
 
-function minecraft_authme_main() {    
+function minecraft_authme_main() {	
 	
-	$content = '';
+	ob_start();
+	?>
+		<link href="<?php echo plugin_dir_url( __FILE__ );?>resources/mui.min.css" rel="stylesheet" type="text/css" />
+		<script src="<?php echo plugin_dir_url( __FILE__ );?>resources/mui.min.js"></script>
+		<style>		
+			.mc_authme_form{
+				width: 70%;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			.mc_authme_msg{
+				width: 70%;
+				margin-left: auto;
+				margin-right: auto;
+			}			
+		</style>	
+	<?php
+	$content = ob_get_contents();
+	ob_end_clean();			
+	
 	$authme_controller = new Sha256();
 	$options = get_option( 'minecraft_authme_options' );
 	
@@ -31,37 +50,54 @@ function minecraft_authme_main() {
 		'msg' => '',
 	);
 	
+	$content .= '<div class="mui--text-center mui-panel mc_authme_msg">';
 	
 	if ($post_data['action'] === 'Log in') {
 		$query_results = process_login($post_data, $authme_controller);
-		$content = $query_results['msg'];
+		$content .= $query_results['msg'];
 	} else if ($post_data['action'] === 'Register') {
 		$query_results = process_register($post_data, $authme_controller);
-		$content = $query_results['msg'];
+		$content .= $query_results['msg'];
+	} else{
+		$content .= "<h3>".$options['welcome']."</h3>";
 	}
-
+	
+	$content .= '</div>';
 	
 	if (!$query_results['status'])
 	{
 		ob_start();
-		?>		
-	
-	<form method="post">
-		<table style="width:80%;" align="center">
-			<tr><td>Username</td><td ><input type="text" value="<?php echo $post_data['username'];?>" name="username" /></td></tr>
-			<tr><td>Password</td><td><input type="password" value="<?php echo $post_data['password'];?>" name="password" /></td></tr>
-			<tr><td>Confirm Password</td><td><input type="password" value="<?php echo $post_data['repass'];?>" name="repass" /></td></tr>
-			<tr><td>Email</td><td><input type="text" value="<?php echo $post_data['email'];?>" name="email" /></td></tr>
-			<tr><td>Invitation Code</td><td><input type="text" value="<?php echo $post_data['invCode'];?>" name="invCode" /></td></tr>
-			<tr>		 
-				<td colspan="2">
-					<input type="hidden" name="action" value="Register"/>
-					<input type="submit" name="action" value="Register">
-				</td>
-			</tr>
-		</table>
-		<?php if($options['captcha']) do_action('google_invre_render_widget_action'); ?>
-		</form>
+		?>
+		
+	<form class="mui-form mc_authme_form" method="post">
+		  <legend><?php echo $options['form-title'];?></legend>
+		  <div class="mui-textfield mui-textfield--float-label">
+				<input type="text" value="<?php echo $post_data['username'];?>" name="username" />
+				<label>Username</label>
+		  </div>
+		  <div class="mui-textfield mui-textfield--float-label">
+				<input type="password" value="<?php echo $post_data['password'];?>" name="password" />
+				<label>Password</label>
+		  </div>
+		  <div class="mui-textfield mui-textfield--float-label">
+				<input type="password" value="<?php echo $post_data['repass'];?>" name="repass" />
+				<label>Confirm Password</label>
+		  </div>
+		  <div class="mui-textfield mui-textfield--float-label">
+				<input type="email" value="<?php echo $post_data['email'];?>" name="email" />
+				<label>Email</label>
+		  </div>
+		  <div class="mui-textfield mui-textfield--float-label">
+				<input type="text" value="<?php echo $post_data['invCode'];?>" name="invCode" />
+				<label>Invitation Code</label>
+		  </div>
+		  <div class="mui--text-center">
+				<input type="hidden" name="action" value="Register" />
+				<button type="submit"  class="mui-btn mui-btn--raised mui-btn--primary" >Submit</button>
+		  </div>
+		  <?php if($options['captcha']) do_action('google_invre_render_widget_action'); ?>
+	</form>			
+		
 		<?php
 		$content .= ob_get_contents();
 		ob_end_clean();			
@@ -93,7 +129,9 @@ function process_register($post_data, AuthMeController $controller) {
         $register_success = $controller->register($post_data['username'], $post_data['password'], $post_data['email']);
         if ($register_success) {
 			$status = true;
-            $msg = '<h3 style="color:#3ca33e">Welcome, '.htmlspecialchars($post_data['username']).'! <br/>Registration completed.</h3><h4>You may now use the account to login at minecraft.henrychang.ca</h4>';  
+            $msg = '			
+					<h3 style="color:#3ca33e">Welcome, '.htmlspecialchars($post_data['username']).'! <br/>Registration completed.</h3>
+					<h4>You may now use the account to login at minecraft.henrychang.ca</h4>';  
 			if($options['email'] != '')
 				wp_mail($options['email'], "New Minecraft Player Registration", 'Minecraft Authme notification: <br/>    '.$post_data['username'].' has just registered with email: '.$post_data['email']);
         } else {
