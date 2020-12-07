@@ -12,25 +12,25 @@ require_once('AuthMeController.php');
 require_once('Sha256.php');
 
 function minecraft_authme_main() {	
-	
+	$content = '';
 	ob_start();
 	?>
 		<link href="<?php echo plugin_dir_url( __FILE__ );?>resources/mui.min.css" rel="stylesheet" type="text/css" />
 		<script src="<?php echo plugin_dir_url( __FILE__ );?>resources/mui.min.js"></script>
 		<style>		
 			.mc_authme_form{
-				width: 70%;
+				width: 100%;
 				margin-left: auto;
 				margin-right: auto;
 			}
 			.mc_authme_msg{
-				width: 70%;
+				width: 100%;
 				margin-left: auto;
 				margin-right: auto;
 			}			
 		</style>	
 	<?php
-	$content = ob_get_contents();
+	$content .= ob_get_contents();
 	ob_end_clean();			
 	
 	$authme_controller = new Sha256();
@@ -112,30 +112,30 @@ function process_register($post_data, AuthMeController $controller) {
 	$options = get_option( 'minecraft_authme_options' );
 	
     if (!apply_filters('google_invre_is_valid_request_filter', true) && $options['captcha']) {
-        $msg = '<h3 style="color:#bf2321">Error: Request denied due to spam activity.</h3>';
+        $msg = '<h3 style="color:#bf2321;">Error: Request denied due to spam activity.</h3>';
     } else if ($controller->isUserRegistered($post_data['username'])) {
-        $msg = '<h3 style="color:#bf2321">Error: This user already exists.</h3>';
+        $msg = '<h3 style="color:#bf2321;">Error: This user already exists.</h3>';
     } else if (preg_match('/\s/',$post_data['username']) || strlen($post_data['username']) > 16 || $post_data['username']==''){
-		$msg = '<h3 style="color:#bf2321">Error: Invalid choice of username.</h3><h4>Cannot contain spaces. Maximum 16 Characters.</h4>';
+		$msg = '<h3 style="color:#bf2321;">Error: Invalid choice of username.</h3><h4>Cannot contain spaces. Maximum 16 Characters.</h4>';
 	} else if (strlen($post_data['password']) < 6 || $post_data['password']==''){
-		$msg = '<h3 style="color:#bf2321">Error: Invalid choice of password.</h3><h4>Minimum 6 Characters.</h4>';
+		$msg = '<h3 style="color:#bf2321;">Error: Invalid choice of password.</h3><h4>Minimum 6 Characters.</h4>';
 	} else if (!is_email_valid($post_data['email'])) {
-        $msg = '<h3 style="color:#bf2321">Error: The supplied email is invalid.</h3>';
+        $msg = '<h3 style="color:#bf2321;">Error: The supplied email is invalid.</h3>';
     } else if ($post_data['repass'] != $post_data['password']) {
-        $msg = '<h3 style="color:#bf2321">Error: Please confirm passwords and try again</h3>';
+        $msg = '<h3 style="color:#bf2321;">Error: Please confirm passwords and try again</h3>';
     } else if ($post_data['invCode'] != $post_data['invitation']) {
-        $msg = '<h3 style="color:#bf2321">Error: The supplied invitation code is invalid.</h3>';
+        $msg = '<h3 style="color:#bf2321;">Error: The supplied invitation code is invalid.</h3>';
     } else {        
         $register_success = $controller->register($post_data['username'], $post_data['password'], $post_data['email']);
         if ($register_success) {
 			$status = true;
             $msg = '			
-					<h3 style="color:#3ca33e">Welcome, '.htmlspecialchars($post_data['username']).'! <br/>Registration completed.</h3>
+					<h3 style="color:#3ca33e;">Welcome, '.htmlspecialchars($post_data['username']).'! <br/>Registration completed.</h3>
 					<h4>You may now use the account to login at minecraft.henrychang.ca</h4>';  
 			if($options['email'] != '')
 				wp_mail($options['email'], "New Minecraft Player Registration", 'Minecraft Authme notification: <br/>    '.$post_data['username'].' has just registered with email: '.$post_data['email']);
         } else {
-           $msg = '<h3 style="color:#bf2321">Error: Unfortunately, there was an error during the registration.</h3>';
+           $msg = '<h3 style="color:#bf2321;">Error: Unfortunately, there was an error during the registration.</h3>';
         }
     }
    return array(
